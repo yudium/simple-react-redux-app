@@ -1,24 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { todoAdded } from "redux/todos/action"; // import redux-action buatan kita
 
 function App() {
+  const [newTodo, setNewTodo] = useState(""); // state local
+
+  const dispatch = useDispatch();
+  function save() {
+    dispatch(todoAdded(newTodo, new Date())); // simpan data ke redux
+    setNewTodo(""); // reset state local
+  }
+
+  const todos = useSelector((state) => state.todos); // ambil data dari redux
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <input
+        type="text"
+        value={newTodo}
+        onChange={(e) => setNewTodo(e.target.value)}
+      />
+      <button onClick={save}>Simpan</button> {/* simpan ke redux */}
+      <br />
+      {/* tampilkan data dari redux */}
+      <ul>
+        {todos.map((todo) => (
+          <li>
+            {todo.content}
+            <br />
+            <small>Dibuat saat detik ke-{todo.createdAt.getSeconds()}</small>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 
